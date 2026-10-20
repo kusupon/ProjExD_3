@@ -188,7 +188,6 @@ def main():
             beam.update(screen)
             if check_bound(beam.rct) != (True, True):
                 beams.remove(beam)
-            print(len(beams)) # デバッグ用
         for bomb in bombs:
             bomb.update(screen)
         pg.display.update()
