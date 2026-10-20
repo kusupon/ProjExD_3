@@ -141,11 +141,36 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Score:
+    """
+    スコアに関するクラス
+    """
+    def __init__(self):
+        """
+        スコアを0で初期化し画面左下に表示する文字列Surfaceを生成する
+        """
+        self.fonto = pg.font.Font(None, 50)
+        self.color = (0, 0, 255)
+        self.score = 0
+        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        self.rct = self.img.get_rect(center=(100, HEIGHT - 50))
+
+    def update(self, screen: pg.Surface):
+        """
+        現在のスコアを描画する
+        引数 screen：画面Surface
+        """
+        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        self.rct = self.img.get_rect(center=(100, HEIGHT - 50))
+        screen.blit(self.img, self.rct)
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
+    score = Score()
     # bomb = Bomb((255, 0, 0), 10)
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
     beam = None  # ゲーム初期化時にはビームは存在しない
@@ -166,6 +191,7 @@ def main():
                 fonto = pg.font.Font(None, 80)
                 txt = fonto.render("Game Over", True, (255, 0, 0))
                 screen.blit(txt, [WIDTH//2-150, HEIGHT//2])
+                score.update(screen)
                 pg.display.update()
                 time.sleep(1)
                 return
@@ -175,7 +201,9 @@ def main():
                 if beam.rct.colliderect(bomb.rct):
                     beam = None
                     bombs[i] = None
+                    score.score += 1
                     bird.change_img(6, screen)
+                    score.update(screen)
                     pg.display.update()
 
         bombs = [bomb for bomb in bombs if bomb is not None]
@@ -186,6 +214,7 @@ def main():
             beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
