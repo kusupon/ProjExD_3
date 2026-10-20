@@ -247,8 +247,7 @@ def main():
         bird.update(key_lst, screen)
         for beam in beams:
             beam.update(screen)
-            if check_bound(beam.rct) != (True, True):
-                beams.remove(beam)
+        beams = [beam for beam in beams if check_bound(beam.rct) == (True, True)]
         for bomb in bombs:
             bomb.update(screen)
         for explosion in explosions:
